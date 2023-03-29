@@ -148,10 +148,7 @@ function link_dokumen($file){
      curl_close ($curl);
    print $result;
 }
-function url_plug(){
-    $data=url('/public/');
-    return $data;
-}
+
 function barcoderider($id,$w,$h){
     $d = new Milon\Barcode\DNS2D();
     $d->setStorPath(__DIR__.'/cache/');
