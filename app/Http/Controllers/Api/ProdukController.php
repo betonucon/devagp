@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\User;
 use App\Models\Barang;
 use App\Models\Viewbarang;
+use App\Models\TViewbarang;
+use App\Models\MSDetailBarang;
 use App\Models\Accesstoken;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -23,31 +25,34 @@ class ProdukController extends BaseController
             $page=$request->page;
         }
         
-        $query=Viewbarang::query();
+        $query=TViewbarang::query();
         if($request->Nama_Barang!=""){
-            $get=$query->where('Nama_Barang','LIKE','%'.$request->Nama_Barang.'%');
+            $get=$query->where('nama_barang','LIKE','%'.$request->Nama_Barang.'%');
         }
-        $get=$query->where('Nama_Barang','NOT LIKE','*%')->orderBy('Nama_Barang','Asc')->paginate(20);
+        $get=$query->where('nama_barang','NOT LIKE','*%')->orderBy('nama_barang','Asc')->paginate(30);
         $cek=$query->count();
         
         $col=[];
         foreach($get as $o){
+            $gdet=MSDetailBarang::where('satuan','!=','-')->where('kode_barang',$o->kode_barang)->get();
+            
+            $total=($o['harga']/$o->isi);
            $sub=[];
                 $cl=[];
-                $cl['KD_Barang'] =$o->KD_Barang;
-                $cl['Nama_Barang'] = $o->Nama_Barang;
-                $cl['Nama_Divisi'] = $o->Nama_Divisi;
-                $cl['Satuan_aktif'] = $o->hargamunculsatuanke;
-                $cl['Satuan_jual'] = $o['Satuan'.$o->hargamunculsatuanke];
-                $cl['Isi'] = (int) $o->Spec;
-                $cl['Harga_Satuan_Jual'] = no_decimal($o['harga_ke1']/((int) $o->Spec));
-                $cl['Satuan'] = $o['Satuan4'];
-                $cl['harga'] = no_decimal($o['harga_ke1']);
+                $cl['KD_Barang'] =$o->kode_barang;
+                $cl['Nama_Barang'] = $o->nama_barang;
+                $cl['Nama_Divisi'] = $o->divisi;
+                $cl['key'] = $o->ide_key;
+                $cl['Satuan_jual'] = $o['satuan'];
+                $cl['Isi'] = (int) $o->isi;
+                $cl['Harga_Satuan_Jual'] = (int) $total;
+                $cl['Satuan'] = $o['satuan'];
+                $cl['harga'] = (int) no_decimal($o['harga']);
                 $cl['keterangan'] = $o->keterangan;
-                $cl['Satuan1'] = $o->Satuan1;
-                $cl['Satuan2'] = $o->Satuan2;
-                $cl['Satuan3'] = $o->Satuan3;
-                $cl['Satuan4'] = $o->Satuan4;
+                foreach($gdet as $no=>$ide){
+                    $cl['Satuan'.$ide->urut] = $ide->satuan;
+                }
+                
                 
                 if($o->thumbnail!=null){
                     $cl['thumbnail'] = url_plug().'/_file_foto/'.$o->thumbnail;

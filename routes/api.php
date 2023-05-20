@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\MasterController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\SalesController;
 use App\Http\Controllers\Api\SoController;
+use App\Http\Controllers\Api\CroneController;
 use App\Http\Controllers\Api\FakturController;
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,9 @@ Route::group(['prefix' => 'barang','middleware'    => 'auth:sanctum'],function()
 });
 Route::post('/save_data_api', [MasterController::class, 'save_data_api']);
 
+Route::group(['prefix' => 'crone'],function(){
+    Route::get('/barang', [CroneController::class, 'barang']);
+});
 Route::group(['prefix' => 'master'],function(){
     Route::get('/provinsi', [MasterController::class, 'provinsi']);
     Route::get('/kategori_produk', [MasterController::class, 'kategori_produk']);

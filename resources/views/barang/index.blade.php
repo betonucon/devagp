@@ -43,11 +43,11 @@
                         },
                         
                         { data: 'action' },
-                        { data: 'KD_Barang' },
-                        { data: 'Kd_JenisBarang' },
-                        { data: 'Nama_Barang' },
-                        { data: 'Nama_Divisi' },
-                        { data: 'uang_Harga_Beli' },
+                        { data: 'kode_barang' },
+                        { data: 'nama_barang' },
+                        { data: 'divisi' },
+                        { data: 'uang_harga' },
+                        { data: 'satuan' },
                         { data: 'count_foto' },
                         
                       ],
@@ -160,10 +160,10 @@
                             
                             <th width="5%"></th>
                             <th width="13%">KD Barang</th>
-                            <th width="9%">KD Jenis</th>
                             <th>Nama Barang</th>
                             <th width="15%">Divisi</th>
-                            <th width="15%">Harga Beli</th>
+                            <th width="9%">Harga Jual</th>
+                            <th width="9%">Satuan Jual</th>
                             <th width="7%">J.Foto</th>
                         </tr>
                     </thead>
@@ -183,10 +183,40 @@
       <!-- /.box -->
 
     </section>
-    <!-- /.content -->
+    <div class="modal modal-primary fade" id="modal-foto">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span></button>
+            <h4 class="modal-title"></h4>
+          </div>
+          <div class="modal-body" style="background-color: #bccdd7 !important;">
+            <div class="row">
+              <div class="col-md-12">
+                <div id="foto"></div>
+              </div>
+              
+            </div>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
   </div>
 @endsection
 
 @push('ajax')
-       
+    <script>
+        function view_barang(img){
+          $('#modal-foto .modal-title').html('Thumbnail');
+          $('#modal-foto').modal('show');
+          $('#foto').html('<img src="'+img+'" width="100%" height="400px">');
+        }
+    </script>
 @endpush

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use App\Models\Viewbarang;
+use App\Models\TViewbarang;
 use App\Models\Fotobarang;
 use App\Models\Barang;
 use App\Models\User;
@@ -51,20 +52,21 @@ class BarangController extends Controller
     public function get_data(request $request)
     {
         error_reporting(0);
-        $query = Viewbarang::query();
+        $query = TViewbarang::query();
         if($request->KD_Divisi!=""){
             $data = $query->where('kd_divisi',$request->KD_Divisi);
         }
-        $data = $query->orderBy('Kd_Barang','Asc')->get();
+        $data = $query->orderBy('kode_barang','Asc')->get();
 
         return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('uang_Harga_Beli', function ($row) {
-                $btn=no_decimal($row['harga_ke'.$row->hargamunculsatuanke]);
-                return $btn;
-            })
             ->addColumn('count_foto', function ($row) {
-                $btn=$row->jumlah_foto;
+                if($row->thumbnail!=""){
+                    $btn='<span class="btn btn-xs btn-info" onclick="view_barang(`'.url_plug().'/_file_foto/'.$row->thumbnail.'?v='.date('ymdhis').'`)"><i class="fa fa-file-image-o"></i></span>';
+                }else{
+                    $btn='<span class="btn btn-xs btn-default" ><i class="fa fa-file-image-o"></i></span>';
+                }
+                
                 return $btn;
             })
             ->addColumn('action', function ($row) {
@@ -74,7 +76,7 @@ class BarangController extends Controller
                          <i class="fa fa-ellipsis-h"></i>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="javascript:;" onclick="location.assign(`'.url('barang/view').'?kd='.encoder($row->KD_Barang).'`)">View</a></li>
+                            <li><a href="javascript:;" onclick="location.assign(`'.url('barang/view').'?kd='.encoder($row->kode_barang).'`)">View</a></li>
                             <li><a href="javascript:;">Delete</a></li>
                         </ul>
                     </div>
@@ -82,7 +84,7 @@ class BarangController extends Controller
                 return $btn;
             })
             
-            ->rawColumns(['action'])
+            ->rawColumns(['action','count_foto'])
             ->make(true);
     }
     
